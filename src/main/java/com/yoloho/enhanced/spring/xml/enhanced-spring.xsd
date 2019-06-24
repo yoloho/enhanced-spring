@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.dayima.org/schema/enhanced-spring"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:tool="http://www.springframework.org/schema/tool"
+	targetNamespace="http://www.dayima.org/schema/enhanced-spring"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+	<xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool.xsd" />
+	<xsd:element name="init">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+			初始化一些spring常用的默认行为，包括：
+			引用log4j2后，不在项目中给出log4j2时，给一个默认的配置出来
+			初始化默认的消息转码
+			设置未捕获异常拦截器
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="log-level">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					默认的日志等级，系统默认为INFO
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="DEBUG"/>
+						<xsd:enumeration value="TRACE"/>
+						<xsd:enumeration value="INFO"/>
+						<xsd:enumeration value="WARN"/>
+						<xsd:enumeration value="ERROR"/>
+						<xsd:enumeration value="FATAL"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="log-console">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					是否拷贝一份log至console，默认为true
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:boolean" />
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="skip-scan">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					是否跳过package-scan，默认为false
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:boolean" />
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="cache-namespace">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					缓存服务的命名空间，只有给定该值才能启用切面缓存，另外需要aop:aspectj-autoproxy
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string" />
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="cache-redis-ref">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					缓存服务的所使用的redisTemplate<string, object>
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string" />
+				</xsd:simpleType>
+			</xsd:attribute>
+            <xsd:attribute name="cache-use-aspectj">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                    是否使用aspectj织入缓存代码，默认为false
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:boolean" />
+                </xsd:simpleType>
+            </xsd:attribute>
+			<xsd:attribute name="capture-normal-request">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					是否拦截非json请求，并输出字符串的错误提示，默认为false
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:boolean" />
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="error-msg-normal-request">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					非json请求里出现异常时的统一错误输出串
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string" />
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="take-all-request-as-json">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					将项目的所有请求均视为json请求，默认为false
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:boolean" />
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="project-name">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					项目名字，如果使用了Sentinel，则默认的初始化方式中将采用这个名字作为app名字
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string" />
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="sentinel-port">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					哨兵端口设置，留空有默认8719顺延
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:integer" />
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="sentinel-group">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+					哨兵组名字设置，留空为默认组
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string" />
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="propertyLoading">
+		<xsd:attribute name="location" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+				需要装载的文件列表，多个文件使用英文逗号分隔
+			]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="properties-ref" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation source="java:java.util.Properties"><![CDATA[
+				使用对象引用的方式来装载Property，参照context:property-placeholder
+			]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="file-encoding" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+				文件编码，仅对properties文件生效
+			]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="order" type="xsd:token">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+				如果同时定义了多个placeholder，那么是按顺序（升序）来进行装载和覆盖
+			]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="ignore-resource-not-found" type="xsd:boolean"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+				是否忽略找不到的文件，不忽略则会抛异常
+			]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="ignore-unresolvable" type="xsd:boolean"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+				如果Property值中引用了变量，那么设置为false时，将会在引用失败时抛异常
+			]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="local-override" type="xsd:boolean"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+				Property覆盖规则，默认为false，意味着是文件里面的Property覆盖其它方式装载的Property
+				设置为true则反之
+			]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:element name="property-placeholder">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+	配置文件重载，增加了自定义的user.dir变量替换，并兼容了老的USER_DIR变量，例如：
+	${user.dir}/conf/log.properties(新)
+	/USER_DIR/conf/log.properties(老)
+	没找到时，会尝试从classpath中载入
+			]]></xsd:documentation>
+			<xsd:appinfo>
+				<tool:annotation>
+					<tool:exports type="com.yoloho.enhanced.spring.util.CustomPropertySourcesPlaceholderConfigurer" />
+				</tool:annotation>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="propertyLoading">
+					<xsd:attribute name="system-properties-mode" default="ENVIRONMENT">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[
+							3.1以后默认值为ENVIRONMENT
+							]]></xsd:documentation>
+						</xsd:annotation>
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:enumeration value="ENVIRONMENT"/>
+								<xsd:enumeration value="NEVER"/>
+								<xsd:enumeration value="FALLBACK"/>
+								<xsd:enumeration value="OVERRIDE"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+					<xsd:attribute name="value-separator" default=":">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[
+							分隔符，默认为":"
+							]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="trim-values">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[
+							是否trim值两端的空白字符(tab, space)
+							]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="null-value">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[
+							是否解析空值
+							]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

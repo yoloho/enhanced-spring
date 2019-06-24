@@ -4,18 +4,18 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.yoloho.parent</groupId>
+        <groupId>com.yoloho.enhanced.parent</groupId>
         <artifactId>enhanced-parent</artifactId>
         <version>1.0.0</version>
     </parent>
-    <groupId>com.yoloho.spring</groupId>
+    <groupId>com.yoloho.enhanced</groupId>
     <artifactId>enhanced-spring</artifactId>
     <name>enhanced-spring</name>
     <version>1.0.0</version>
     <dependencies>
         <!-- enhanced related -->
         <dependency>
-            <groupId>com.yoloho.common</groupId>
+            <groupId>com.yoloho.enhanced</groupId>
             <artifactId>enhanced-common</artifactId>
         </dependency>
         <!-- spring -->

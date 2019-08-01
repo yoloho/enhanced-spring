@@ -10,7 +10,7 @@ import com.yoloho.enhanced.spring.util.PropertyUtil;
 
 @ContextConfiguration(locations = { "classpath:context.xml" })
 @RunWith(MySpringJUnit4ClassRunner.class)
-public class DayimaPropertyTest {
+public class PropertyUtilTest {
     
     @Test
     public void getPropertyTest() {

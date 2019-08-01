@@ -36,7 +36,7 @@ public class CommonBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof RequestMappingHandlerAdapter) {
-            // 增加baseVo的argumentResolver
+            // argumentResolver
             RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) bean;
             
             this.appendCustomResolver(adapter);
@@ -60,7 +60,6 @@ public class CommonBeanPostProcessor implements BeanPostProcessor {
                 fastJsonConverter.setFastJsonConfig(fastJsonConfig);
             }
             messageConverters.add(fastJsonConverter);
-            messageConverters.add(new StringHttpMessageConverter(Charset.forName("utf-8")));
             adapter.setMessageConverters(messageConverters);
             logger.info("Initialize message converters");
         }

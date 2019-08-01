@@ -43,46 +43,6 @@
 					<xsd:restriction base="xsd:boolean" />
 				</xsd:simpleType>
 			</xsd:attribute>
-			<xsd:attribute name="skip-scan">
-				<xsd:annotation>
-					<xsd:documentation><![CDATA[
-					是否跳过package-scan，默认为false
-					]]></xsd:documentation>
-				</xsd:annotation>
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:boolean" />
-				</xsd:simpleType>
-			</xsd:attribute>
-			<xsd:attribute name="cache-namespace">
-				<xsd:annotation>
-					<xsd:documentation><![CDATA[
-					缓存服务的命名空间，只有给定该值才能启用切面缓存，另外需要aop:aspectj-autoproxy
-					]]></xsd:documentation>
-				</xsd:annotation>
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:string" />
-				</xsd:simpleType>
-			</xsd:attribute>
-			<xsd:attribute name="cache-redis-ref">
-				<xsd:annotation>
-					<xsd:documentation><![CDATA[
-					缓存服务的所使用的redisTemplate<string, object>
-					]]></xsd:documentation>
-				</xsd:annotation>
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:string" />
-				</xsd:simpleType>
-			</xsd:attribute>
-            <xsd:attribute name="cache-use-aspectj">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-                    是否使用aspectj织入缓存代码，默认为false
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:boolean" />
-                </xsd:simpleType>
-            </xsd:attribute>
 			<xsd:attribute name="capture-normal-request">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[

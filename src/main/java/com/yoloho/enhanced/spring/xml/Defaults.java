@@ -72,7 +72,11 @@ class Defaults {
         }
         //设置环境变量
         {
-            System.setProperty("csp.sentinel.dashboard.server", "sentinel.dayima.org:80");
+            String dashboardServer = System.getProperty("sentinel.dashboard");
+            if (StringUtils.isEmpty(dashboardServer)) {
+                dashboardServer = "sentinel.dayima.org:80";
+            }
+            System.setProperty("csp.sentinel.dashboard.server", dashboardServer);
             String baseDir = System.getProperty("catalina.base");
             if (StringUtils.isNotEmpty(baseDir)) {
                 System.setProperty("user.home", baseDir);

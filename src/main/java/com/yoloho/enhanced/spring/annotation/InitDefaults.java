@@ -38,12 +38,69 @@ public @interface InitDefaults {
      */
     boolean logFile() default true;
     
+    /**
+     * logging level
+     * <p>
+     * Default to be "INFO"
+     * 
+     * @return
+     */
     String logLevel() default "INFO";
+    
+    /**
+     * Used in sentinel to identify name of project
+     * 
+     * @return
+     */
     String projectName() default "";
+    
+    /**
+     * Which port sentinel-transport will behind
+     * 
+     * @return
+     */
     int sentinelPort() default 0;
+    
+    /**
+     * Optional. Group name of datasource.
+     * 
+     * @return
+     */
     String sentinelGroup() default "";
+    
+    /**
+     * Whether to capture normal type request (non-json).
+     * <p>
+     * Default to false.
+     * 
+     * @return
+     */
     boolean captureNormalRequest() default false;
+    
+    /**
+     * Whether taking all request as json type requests.
+     * <p>
+     * Default to false.
+     * 
+     * @return
+     */
     boolean takeAllRequestsAsJson() default false;
+    
+    /**
+     * When exception is occurred in normal request whether using a common message as response.
+     * <p>
+     * Default to show detail error message.
+     * 
+     * @return
+     */
     String errorMessageForNormalRequest() default "";
+    
+    /**
+     * ".roperties" file list separated by comma to load for placeholders.
+     * <p>
+     * eg. "conf/system.properties,conf/redis.properties"
+     * 
+     * @return
+     */
     String[] propertyLocations() default {};
 }

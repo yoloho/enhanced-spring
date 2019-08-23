@@ -7,7 +7,7 @@ Some general configuration under Spring.
 ```xml
 <groupId>com.yoloho.enhanced</groupId>
 <artifactId>enhanced-spring</artifactId>
-<version>1.0.1</version>
+<version>1.0.2</version>
 ```
 
 # InitDefaults
@@ -167,6 +167,9 @@ For container or other scenario environment variables are better way to load con
 * ENV "ERU_POD" must not be empty (If you are already in ERU it is set automatically)
 
 # Change Log
+## 1.0.2
+* Support fix error message under json format response
+
 ## 1.0.1
 * Supplement documents
 * Remove deprecated files

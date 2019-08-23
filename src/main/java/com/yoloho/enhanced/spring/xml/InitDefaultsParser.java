@@ -172,6 +172,9 @@ public class InitDefaultsParser extends AbstractSimpleBeanDefinitionParser {
         if (StringUtils.isNotEmpty(defaults.getErrorMessageForNormalRequest())) {
             CustomExceptionHandler.setNormalMsgError(defaults.getErrorMessageForNormalRequest());
         }
+        if (StringUtils.isNotEmpty(defaults.getErrorMessageForJSONRequest())) {
+            CustomExceptionHandler.setJSONMsgError(defaults.getErrorMessageForJSONRequest());
+        }
         if (inSpringWeb) {
             {
                 // 异常处理

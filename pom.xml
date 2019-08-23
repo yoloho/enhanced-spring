@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.yoloho.enhanced.parent</groupId>
         <artifactId>enhanced-parent</artifactId>
-        <version>1.0.7</version>
+        <version>1.0.9</version>
     </parent>
     <groupId>com.yoloho.enhanced</groupId>
     <artifactId>enhanced-spring</artifactId>
     <name>enhanced-spring</name>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <dependencies>
         <!-- enhanced related -->
         <dependency>

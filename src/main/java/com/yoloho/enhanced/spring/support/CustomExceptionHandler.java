@@ -1,5 +1,6 @@
 package com.yoloho.enhanced.spring.support;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -7,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver;
 import com.alibaba.fastjson.JSON;
 import com.yoloho.enhanced.common.support.MsgBean;
 import com.yoloho.enhanced.spring.exception.InvokingException;
+import com.yoloho.enhanced.spring.util.PropertyUtil;
 
 /**
  * 默认的未捕获异常处理器，会在json请求中返回标准的json错误
@@ -36,11 +39,24 @@ public class CustomExceptionHandler extends AbstractHandlerExceptionResolver {
     private static boolean takeAllRequestAsJSON = false;
     
     private static String normalMsgError = null;
+    private static String jsonMsgError = null;
     
     public CustomExceptionHandler() {
         super();
         setOrder(-1);
         logger.info("init default exception handler");
+    }
+    
+    @PostConstruct
+    public void init() {
+        if (StringUtils.isNotEmpty(jsonMsgError) && jsonMsgError.startsWith("${")) {
+            // property resolving
+            jsonMsgError = PropertyUtil.resolveProperty(jsonMsgError);
+        }
+        if (StringUtils.isNotEmpty(normalMsgError) && normalMsgError.startsWith("${")) {
+            // property resolving
+            normalMsgError = PropertyUtil.resolveProperty(normalMsgError);
+        }
     }
     
     @Override
@@ -50,12 +66,14 @@ public class CustomExceptionHandler extends AbstractHandlerExceptionResolver {
         MsgBean msg = new MsgBean();
         if (exception instanceof TypeMismatchException) {// wuzl类型不正确
             TypeMismatchException typeEx = (TypeMismatchException) exception;
-            msg.failure(1, String.format("参数值[%s]不是正确的类型", typeEx.getValue()));
+            msg.failure(1, String.format("Param [%s] is in wrong format", typeEx.getValue()));
         } else if (exception instanceof MissingServletRequestParameterException) {// wuzl没有必传参数
             MissingServletRequestParameterException missingEx = (MissingServletRequestParameterException) exception;
-            msg.failure(1, String.format("参数[%s]不可以为空", missingEx.getParameterName()));
+            msg.failure(1, String.format("Param [%s] should not be empty", missingEx.getParameterName()));
         } else if (exception instanceof org.springframework.web.multipart.MaxUploadSizeExceededException) {
-            msg.failure("上传文件过大，已经超过最大限度");
+            msg.failure("Upload file too large");
+        } else if (exception instanceof HttpMessageNotReadableException) {
+            msg.failure("Parameters malformed");
 		} else if (exception instanceof InvokingException) {
 		    InvokingException ex = (InvokingException) exception;
             if (ex.getMsg() != null) {
@@ -73,10 +91,13 @@ public class CustomExceptionHandler extends AbstractHandlerExceptionResolver {
             try {
                 response.reset();
                 response.setContentType("application/json; charset=utf-8");
+                if (StringUtils.isNotEmpty(jsonMsgError)) {
+                    msg.failure(jsonMsgError);
+                }
                 response.getWriter().write(JSON.toJSONString(msg.returnMsg()));
                 response.flushBuffer();
             } catch (Exception e) {
-                logger.error("异常捕获器错误1", e);
+                logger.error("Capture json exception failed", e);
             }
             return new ModelAndView();
         } else if (handleNormalRequest) {
@@ -84,14 +105,14 @@ public class CustomExceptionHandler extends AbstractHandlerExceptionResolver {
             try {
                 response.reset();
                 response.setContentType("text/plain; charset=utf-8");
-                if (normalMsgError != null) {
+                if (StringUtils.isNotEmpty(normalMsgError)) {
                     response.getWriter().write(normalMsgError);
                 } else {
                     response.getWriter().write(msg.getErrdesc());
                 }
                 response.flushBuffer();
             } catch (Exception e) {
-                logger.error("异常捕获器错误", e);
+                logger.error("Capture normal exception failed", e);
             }
             return new ModelAndView();
         }
@@ -132,5 +153,9 @@ public class CustomExceptionHandler extends AbstractHandlerExceptionResolver {
      */
     public static void setNormalMsgError(String normalMsgError) {
         CustomExceptionHandler.normalMsgError = normalMsgError;
+    }
+    
+    public static void setJSONMsgError(String errorMsg) {
+        CustomExceptionHandler.jsonMsgError = errorMsg;
     }
 }

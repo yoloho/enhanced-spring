@@ -96,6 +96,15 @@ public @interface InitDefaults {
     String errorMessageForNormalRequest() default "";
     
     /**
+     * When exception is occurred in normal request whether using a common message as response(JSON response).
+     * <p>
+     * Default to show detail error message.
+     * 
+     * @return
+     */
+    String errorMessageForJSONRequest() default "";
+    
+    /**
      * ".roperties" file list separated by comma to load for placeholders.
      * <p>
      * eg. "conf/system.properties,conf/redis.properties"

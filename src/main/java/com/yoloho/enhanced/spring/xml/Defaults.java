@@ -23,6 +23,7 @@ class Defaults {
     private boolean captureNormalRequest = false;
     private boolean takeAllRequestsAsJson = false;
     private String errorMessageForNormalRequest = null;
+    private String errorMessageForJSONRequest = null;
     
     public Defaults() {
     }
@@ -43,6 +44,7 @@ class Defaults {
         this.captureNormalRequest = (Boolean)map.get("captureNormalRequest");
         this.takeAllRequestsAsJson = (Boolean)map.get("takeAllRequestsAsJson");
         this.errorMessageForNormalRequest = (String)map.get("errorMessageForNormalRequest");
+        this.errorMessageForJSONRequest = (String)map.get("errorMessageForJSONRequest");
     }
     
     public Defaults(Element element) {
@@ -55,6 +57,7 @@ class Defaults {
         this.captureNormalRequest = StringUtils.equalsIgnoreCase(element.getAttribute("capture-normal-request"), "true");
         this.takeAllRequestsAsJson = StringUtils.equalsIgnoreCase(element.getAttribute("take-all-requests-as-json"), "true");
         this.errorMessageForNormalRequest = element.getAttribute("error-msg-normal-request");
+        this.errorMessageForJSONRequest = element.getAttribute("error-msg-json-request");
     }
     
     private void initSentinel(String projectName, String sentinelPort, String sentinelGroup) {
@@ -146,6 +149,14 @@ class Defaults {
 
     public void setErrorMessageForNormalRequest(String errorMessageForNormalRequest) {
         this.errorMessageForNormalRequest = errorMessageForNormalRequest;
+    }
+    
+    public String getErrorMessageForJSONRequest() {
+        return errorMessageForJSONRequest;
+    }
+    
+    public void setErrorMessageForJSONRequest(String errorMessageForJSONRequest) {
+        this.errorMessageForJSONRequest = errorMessageForJSONRequest;
     }
 
     public String getLogLevel() {

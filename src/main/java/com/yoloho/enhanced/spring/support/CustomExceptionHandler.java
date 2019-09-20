@@ -49,13 +49,26 @@ public class CustomExceptionHandler extends AbstractHandlerExceptionResolver {
     
     @PostConstruct
     public void init() {
+        String resolved = null;
         if (StringUtils.isNotEmpty(jsonMsgError) && jsonMsgError.startsWith("${")) {
             // property resolving
-            jsonMsgError = PropertyUtil.resolveProperty(jsonMsgError);
+            resolved = PropertyUtil.resolveProperty(jsonMsgError);
+            if (StringUtils.equals(jsonMsgError, resolved)) {
+                // fail
+                jsonMsgError = null;
+            } else {
+                jsonMsgError = resolved;
+            }
         }
         if (StringUtils.isNotEmpty(normalMsgError) && normalMsgError.startsWith("${")) {
             // property resolving
-            normalMsgError = PropertyUtil.resolveProperty(normalMsgError);
+            resolved = PropertyUtil.resolveProperty(normalMsgError);
+            if (StringUtils.equals(normalMsgError, resolved)) {
+                // fail
+                normalMsgError = null;
+            } else {
+                normalMsgError = resolved;
+            }
         }
     }
     
@@ -64,6 +77,7 @@ public class CustomExceptionHandler extends AbstractHandlerExceptionResolver {
     protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
             Exception exception) {
         MsgBean msg = new MsgBean();
+        boolean isDetailErrorMsg = false;
         if (exception instanceof TypeMismatchException) {// wuzl类型不正确
             TypeMismatchException typeEx = (TypeMismatchException) exception;
             msg.failure(1, String.format("Param [%s] is in wrong format", typeEx.getValue()));
@@ -84,6 +98,7 @@ public class CustomExceptionHandler extends AbstractHandlerExceptionResolver {
         } else {
             msg.failure(1, exception.getMessage());
             logger.error("【{}】接口异常：{}", request.getRequestURI(), exception.getMessage(), exception);
+            isDetailErrorMsg = true;
         }
         String accept = request.getHeader("accept");
         if (takeAllRequestAsJSON || StringUtils.isEmpty(accept) || accept.contains("json")) {
@@ -91,7 +106,7 @@ public class CustomExceptionHandler extends AbstractHandlerExceptionResolver {
             try {
                 response.reset();
                 response.setContentType("application/json; charset=utf-8");
-                if (StringUtils.isNotEmpty(jsonMsgError)) {
+                if (isDetailErrorMsg == true && StringUtils.isNotEmpty(jsonMsgError)) {
                     msg.failure(jsonMsgError);
                 }
                 response.getWriter().write(JSON.toJSONString(msg.returnMsg()));

@@ -167,6 +167,9 @@ For container or other scenario environment variables are better way to load con
 * ENV "ERU_POD" must not be empty (If you are already in ERU it is set automatically)
 
 # Change Log
+## 1.0.3
+* Optimized `CustomExceptionHandler`
+
 ## 1.0.2
 * Support fix error message under json format response
 
